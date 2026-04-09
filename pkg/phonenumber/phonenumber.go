@@ -1,6 +1,9 @@
 package phonenumber
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 func IsValid(phoneNumber string) bool {
 	// TODO - we can use regular expression to support +98 pattern
@@ -15,6 +18,8 @@ func IsValid(phoneNumber string) bool {
 	if _, err := strconv.Atoi(phoneNumber[2:]); err != nil {
 		return false
 	}
+
+	fmt.Println("PHONENUMBER", phoneNumber)
 
 	return true
 }

@@ -10,6 +10,10 @@ import (
 	"net/http"
 )
 
+const (
+	JwtSignKey = "jwt_secret_key"
+)
+
 func main() {
 
 	mux := http.NewServeMux()
@@ -54,7 +58,7 @@ func userRegisterHandler(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	mysqlRepo := mysql.New()
-	userSvc := userservice.New(mysqlRepo)
+	userSvc := userservice.New(mysqlRepo, JwtSignKey)
 	_, err = userSvc.Register(uReq)
 	if err != nil {
 		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
@@ -90,15 +94,20 @@ func userLoginHandler(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	mysqlRepo := mysql.New()
-	userSvc := userservice.New(mysqlRepo)
-	_, err = userSvc.Login(uReq)
+	userSvc := userservice.New(mysqlRepo, JwtSignKey)
+	resp, err := userSvc.Login(uReq)
 	if err != nil {
 		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
 
 		return
 	}
 
-	writer.Write([]byte(`{"message": "user logged in successfully"}`))
+	respData, err := json.Marshal(resp)
+	if err != nil {
+		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
+	}
+
+	writer.Write([]byte(`{"message": "user logged in successfully", "data": ` + string(respData) + `}`))
 }
 
 func userProfile(writer http.ResponseWriter, req *http.Request) {
@@ -126,7 +135,7 @@ func userProfile(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	mysqlRepo := mysql.New()
-	userSvc := userservice.New(mysqlRepo)
+	userSvc := userservice.New(mysqlRepo, JwtSignKey)
 	resp, err := userSvc.GetProfile(pReq)
 	if err != nil {
 		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))

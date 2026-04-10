@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"game-app/entity"
 	"game-app/pkg/phonenumber"
+	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -16,11 +18,12 @@ type Repository interface {
 }
 
 type Service struct {
-	repo Repository
+	signKey string
+	repo    Repository
 }
 
-func New(repo Repository) Service {
-	return Service{repo: repo}
+func New(repo Repository, signKey string) Service {
+	return Service{signKey: signKey, repo: repo}
 }
 
 type RegisterRequest struct {
@@ -91,6 +94,7 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
+	AccessToken string `json:"access_token"`
 }
 
 func (s Service) Login(req LoginRequest) (LoginResponse, error) {
@@ -108,6 +112,11 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 		return LoginResponse{}, fmt.Errorf("username or password is not correct")
 	}
 
+	token, err := createToken(user.ID, s.signKey)
+	if err != nil {
+		return LoginResponse{}, fmt.Errorf("unexpected err: %w", err)
+	}
+
 	// compare the user password with the req.password
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
@@ -115,7 +124,9 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 		return LoginResponse{}, fmt.Errorf("username or password is not correct")
 	}
 
-	return LoginResponse{}, nil
+	return LoginResponse{
+		AccessToken: token,
+	}, nil
 }
 
 type ProfileRequest struct {
@@ -135,4 +146,22 @@ func (s Service) GetProfile(req ProfileRequest) (ProfileResponse, error) {
 	}
 
 	return ProfileResponse{Name: user.Name}, nil
+}
+
+type Claims struct {
+	jwt.RegisteredClaims
+	UserID uint
+}
+
+func createToken(UserID uint, signKey string) (string, error) {
+	t := jwt.New(jwt.SigningMethodHS256)
+
+	t.Claims = &Claims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(30 * time.Minute)),
+		},
+		UserID: UserID,
+	}
+
+	return t.SignedString([]byte(signKey))
 }

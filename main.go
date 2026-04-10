@@ -14,6 +14,7 @@ func main() {
 
 	mux := http.NewServeMux()
 
+	mux.HandleFunc("/health-check", healthCheckHandler)
 	mux.HandleFunc("/users/register", userRegisterHandler)
 
 	//err := http.ListenAndServe(":8080", mux)
@@ -26,6 +27,8 @@ func userRegisterHandler(writer http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		fmt.Fprintf(writer, `{"error":"method not allowed"}`)
 	}
+
+	writer.Header().Set("Content-Type", "application/json")
 
 	data, err := io.ReadAll(req.Body)
 	if err != nil {
@@ -51,5 +54,9 @@ func userRegisterHandler(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	writer.Write([]byte(`{"message": "user created successfully"`))
+	writer.Write([]byte(`{"message": "user created successfully"}`))
+}
+
+func healthCheckHandler(writer http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(writer, `{"alive": true}`)
 }

@@ -17,6 +17,7 @@ func main() {
 	mux.HandleFunc("/health-check", healthCheckHandler)
 	mux.HandleFunc("/users/register", userRegisterHandler)
 	mux.HandleFunc("/users/login", userLoginHandler)
+	mux.HandleFunc("/users/profile", userProfile)
 
 	//err := http.ListenAndServe(":8080", mux)
 
@@ -24,12 +25,18 @@ func main() {
 	log.Fatal(server.ListenAndServe())
 }
 
+func healthCheckHandler(writer http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(writer, `{"alive": true}`)
+}
+
 func userRegisterHandler(writer http.ResponseWriter, req *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+
 	if req.Method != http.MethodPost {
 		fmt.Fprintf(writer, `{"error":"method not allowed"}`)
-	}
 
-	writer.Header().Set("Content-Type", "application/json")
+		return
+	}
 
 	data, err := io.ReadAll(req.Body)
 	if err != nil {
@@ -58,16 +65,14 @@ func userRegisterHandler(writer http.ResponseWriter, req *http.Request) {
 	writer.Write([]byte(`{"message": "user created successfully"}`))
 }
 
-func healthCheckHandler(writer http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(writer, `{"alive": true}`)
-}
-
 func userLoginHandler(writer http.ResponseWriter, req *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+
 	if req.Method != http.MethodPost {
 		fmt.Fprintf(writer, `{"error":"method not allowed"}`)
-	}
 
-	writer.Header().Set("Content-Type", "application/json")
+		return
+	}
 
 	data, err := io.ReadAll(req.Body)
 	if err != nil {
@@ -94,4 +99,45 @@ func userLoginHandler(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	writer.Write([]byte(`{"message": "user logged in successfully"}`))
+}
+
+func userProfile(writer http.ResponseWriter, req *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+
+	if req.Method != http.MethodGet {
+		fmt.Fprintf(writer, `{"error":"method not allowed"}`)
+
+		return
+	}
+
+	data, err := io.ReadAll(req.Body)
+	if err != nil {
+		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
+
+		return
+	}
+
+	var pReq userservice.ProfileRequest
+	err = json.Unmarshal(data, &pReq)
+	if err != nil {
+		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
+
+		return
+	}
+
+	mysqlRepo := mysql.New()
+	userSvc := userservice.New(mysqlRepo)
+	resp, err := userSvc.GetProfile(pReq)
+	if err != nil {
+		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
+
+		return
+	}
+
+	respData, err := json.Marshal(resp)
+	if err != nil {
+		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
+	}
+
+	writer.Write([]byte(`{"message": "user find successfully", "data": ` + string(respData) + `}`))
 }

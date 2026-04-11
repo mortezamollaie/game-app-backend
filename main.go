@@ -8,6 +8,9 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 const (
@@ -119,24 +122,16 @@ func userProfile(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	data, err := io.ReadAll(req.Body)
+	auth := req.Header.Get("Authorization")
+	claims, err := parseJWT(auth)
+
 	if err != nil {
-		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
-
-		return
-	}
-
-	var pReq userservice.ProfileRequest
-	err = json.Unmarshal(data, &pReq)
-	if err != nil {
-		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
-
-		return
+		writer.Write([]byte(`{"message": "token is not valid"}`))
 	}
 
 	mysqlRepo := mysql.New()
 	userSvc := userservice.New(mysqlRepo, JwtSignKey)
-	resp, err := userSvc.GetProfile(pReq)
+	resp, err := userSvc.GetProfile(userservice.ProfileRequest{UserID: claims.UserID})
 	if err != nil {
 		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
 
@@ -149,4 +144,23 @@ func userProfile(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	writer.Write([]byte(`{"message": "user find successfully", "data": ` + string(respData) + `}`))
+}
+
+func parseJWT(tokenStr string) (*userservice.Claims, error) {
+	strings.Replace(tokenStr, "Bearer ", "", 1)
+
+	token, err := jwt.ParseWithClaims(tokenStr, &userservice.Claims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(JwtSignKey), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if claims, ok := token.Claims.(*userservice.Claims); ok && token.Valid {
+		fmt.Printf("userID: %v, ExpiresAt: %v\n", claims.UserID, claims.RegisteredClaims.ExpiresAt)
+		return claims, nil
+	} else {
+		return nil, err
+	}
 }

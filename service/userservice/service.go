@@ -149,8 +149,42 @@ func (s Service) GetProfile(req ProfileRequest) (ProfileResponse, error) {
 }
 
 type Claims struct {
-	jwt.RegisteredClaims
-	UserID uint
+	RegisteredClaims jwt.RegisteredClaims
+	UserID           uint
+}
+
+func (c Claims) GetExpirationTime() (*jwt.NumericDate, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (c Claims) GetIssuedAt() (*jwt.NumericDate, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (c Claims) GetNotBefore() (*jwt.NumericDate, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (c Claims) GetIssuer() (string, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (c Claims) GetSubject() (string, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (c Claims) GetAudience() (jwt.ClaimStrings, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (c Claims) Valid() error {
+	return nil
 }
 
 func createToken(UserID uint, signKey string) (string, error) {

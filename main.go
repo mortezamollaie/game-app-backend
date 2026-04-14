@@ -1,14 +1,12 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
+	"game-app/config"
+	"game-app/delivery/httpserver"
 	"game-app/repository/mysql"
 	authservice "game-app/service/authService"
-	"game-app/service/userservice"
-	"io"
-	"log"
-	"net/http"
+	userservice "game-app/service/userservice"
+
 	"time"
 )
 
@@ -22,136 +20,120 @@ const (
 
 func main() {
 
-	mux := http.NewServeMux()
+	cfg := config.Config{
+		HTTPServer: config.HTTPServer{Port: 8080},
+		Auth: authservice.Config{
+			SignKey:               JwtSignKey,
+			AccessExpirationTime:  AccessTokenExpireDuration,
+			RefreshExpirationTime: RefreshTokenExpireDuration,
+			AccessSubject:         AccessTokenSubject,
+			RefreshSubject:        RefreshTokenSubject,
+		},
+		Mysql: mysql.Config{
+			Host:     "127.0.0.1",
+			Port:     3306,
+			Username: "root",
+			Password: "",
+			DBName:   "gameapp_db",
+		},
+	}
 
-	mux.HandleFunc("/health-check", healthCheckHandler)
-	mux.HandleFunc("/users/register", userRegisterHandler)
-	mux.HandleFunc("/users/login", userLoginHandler)
-	mux.HandleFunc("/users/profile", userProfile)
-
-	//err := http.ListenAndServe(":8080", mux)
-
-	server := http.Server{Addr: ":8080", Handler: mux}
-	fmt.Println("Server is running on port 8080")
-	log.Fatal(server.ListenAndServe())
+	authSvc, userSvc := setupServices(cfg)
+	server := httpserver.New(cfg, authSvc, userSvc)
+	server.Serve()
 }
 
-func healthCheckHandler(writer http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(writer, `{"alive": true}`)
-}
+//func userLoginHandler(writer http.ResponseWriter, req *http.Request) {
+//	writer.Header().Set("Content-Type", "application/json")
+//
+//	if req.Method != http.MethodPost {
+//		writer.WriteHeader(http.StatusMethodNotAllowed)
+//		fmt.Fprintf(writer, `{"error":"method not allowed"}`)
+//
+//		return
+//	}
+//
+//	data, err := io.ReadAll(req.Body)
+//	if err != nil {
+//		writer.WriteHeader(http.StatusInternalServerError)
+//		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
+//
+//		return
+//	}
+//
+//	var uReq userservice.LoginRequest
+//	err = json.Unmarshal(data, &uReq)
+//	if err != nil {
+//		writer.WriteHeader(http.StatusInternalServerError)
+//		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
+//
+//		return
+//	}
+//
+//	authScv := authservice.New(JwtSignKey, AccessTokenSubject, RefreshTokenSubject, AccessTokenExpireDuration, RefreshTokenExpireDuration)
+//
+//	mysqlRepo := mysql.New()
+//	userSvc := userservice.New(authScv, mysqlRepo)
+//	resp, err := userSvc.Login(uReq)
+//	if err != nil {
+//		writer.WriteHeader(http.StatusInternalServerError)
+//		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
+//
+//		return
+//	}
+//
+//	respData, err := json.Marshal(resp)
+//	if err != nil {
+//		writer.WriteHeader(http.StatusInternalServerError)
+//		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
+//	}
+//
+//	writer.Write([]byte(`{"message": "user logged in successfully", "data": ` + string(respData) + `}`))
+//}
+//
+//func userProfile(writer http.ResponseWriter, req *http.Request) {
+//	writer.Header().Set("Content-Type", "application/json")
+//
+//	if req.Method != http.MethodGet {
+//		writer.WriteHeader(http.StatusMethodNotAllowed)
+//		fmt.Fprintf(writer, `{"error":"method not allowed"}`)
+//
+//		return
+//	}
+//
+//	authScv := authservice.New(JwtSignKey, AccessTokenSubject, RefreshTokenSubject, AccessTokenExpireDuration, RefreshTokenExpireDuration)
+//
+//	authToken := req.Header.Get("Authorization")
+//	claims, err := authScv.ParseToken(authToken)
+//
+//	if err != nil {
+//		writer.WriteHeader(http.StatusUnauthorized)
+//		writer.Write([]byte(`{"message": "token is not valid"}`))
+//	}
+//
+//	mysqlRepo := mysql.New()
+//	userSvc := userservice.New(authScv, mysqlRepo)
+//	resp, err := userSvc.GetProfile(userservice.ProfileRequest{UserID: claims.UserID})
+//	if err != nil {
+//		writer.WriteHeader(http.StatusInternalServerError)
+//		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
+//
+//		return
+//	}
+//
+//	respData, err := json.Marshal(resp)
+//	if err != nil {
+//		writer.WriteHeader(http.StatusInternalServerError)
+//		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
+//	}
+//
+//	writer.Write([]byte(`{"message": "user find successfully", "data": ` + string(respData) + `}`))
+//}
 
-func userRegisterHandler(writer http.ResponseWriter, req *http.Request) {
-	writer.Header().Set("Content-Type", "application/json")
+func setupServices(cfg config.Config) (authservice.Service, userservice.Service) {
+	authSvc := authservice.New(cfg.Auth)
 
-	if req.Method != http.MethodPost {
-		fmt.Fprintf(writer, `{"error":"method not allowed"}`)
-
-		return
-	}
-
-	data, err := io.ReadAll(req.Body)
-	if err != nil {
-		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
-
-		return
-	}
-
-	var uReq userservice.RegisterRequest
-	err = json.Unmarshal(data, &uReq)
-	if err != nil {
-		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
-
-		return
-	}
-
-	authScv := authservice.New(JwtSignKey, AccessTokenSubject, RefreshTokenSubject, AccessTokenExpireDuration, RefreshTokenExpireDuration)
-
-	mysqlRepo := mysql.New()
-	userSvc := userservice.New(authScv, mysqlRepo)
-	_, err = userSvc.Register(uReq)
-	if err != nil {
-		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
-
-		return
-	}
-
-	writer.Write([]byte(`{"message": "user created successfully"}`))
-}
-
-func userLoginHandler(writer http.ResponseWriter, req *http.Request) {
-	writer.Header().Set("Content-Type", "application/json")
-
-	if req.Method != http.MethodPost {
-		fmt.Fprintf(writer, `{"error":"method not allowed"}`)
-
-		return
-	}
-
-	data, err := io.ReadAll(req.Body)
-	if err != nil {
-		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
-
-		return
-	}
-
-	var uReq userservice.LoginRequest
-	err = json.Unmarshal(data, &uReq)
-	if err != nil {
-		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
-
-		return
-	}
-
-	authScv := authservice.New(JwtSignKey, AccessTokenSubject, RefreshTokenSubject, AccessTokenExpireDuration, RefreshTokenExpireDuration)
-
-	mysqlRepo := mysql.New()
-	userSvc := userservice.New(authScv, mysqlRepo)
-	resp, err := userSvc.Login(uReq)
-	if err != nil {
-		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
-
-		return
-	}
-
-	respData, err := json.Marshal(resp)
-	if err != nil {
-		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
-	}
-
-	writer.Write([]byte(`{"message": "user logged in successfully", "data": ` + string(respData) + `}`))
-}
-
-func userProfile(writer http.ResponseWriter, req *http.Request) {
-	writer.Header().Set("Content-Type", "application/json")
-
-	if req.Method != http.MethodGet {
-		fmt.Fprintf(writer, `{"error":"method not allowed"}`)
-
-		return
-	}
-
-	authScv := authservice.New(JwtSignKey, AccessTokenSubject, RefreshTokenSubject, AccessTokenExpireDuration, RefreshTokenExpireDuration)
-
-	authToken := req.Header.Get("Authorization")
-	claims, err := authScv.ParseToken(authToken)
-
-	if err != nil {
-		writer.Write([]byte(`{"message": "token is not valid"}`))
-	}
-
-	mysqlRepo := mysql.New()
-	userSvc := userservice.New(authScv, mysqlRepo)
-	resp, err := userSvc.GetProfile(userservice.ProfileRequest{UserID: claims.UserID})
-	if err != nil {
-		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
-
-		return
-	}
-
-	respData, err := json.Marshal(resp)
-	if err != nil {
-		writer.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, err.Error())))
-	}
-
-	writer.Write([]byte(`{"message": "user find successfully", "data": ` + string(respData) + `}`))
+	MysqlRepo := mysql.New(cfg.Mysql)
+	userSvc := userservice.New(authSvc, MysqlRepo)
+	return authSvc, userSvc
 }

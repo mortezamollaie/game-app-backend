@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"game-app/entity"
 	"game-app/pkg/phonenumber"
-	"time"
 
-	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -17,13 +15,18 @@ type Repository interface {
 	GetUserByID(id uint) (entity.User, error)
 }
 
-type Service struct {
-	signKey string
-	repo    Repository
+type AuthGenerator interface {
+	CreateAccessToken(user entity.User) (string, error)
+	CreateRefreshToken(user entity.User) (string, error)
 }
 
-func New(repo Repository, signKey string) Service {
-	return Service{signKey: signKey, repo: repo}
+type Service struct {
+	auth AuthGenerator
+	repo Repository
+}
+
+func New(authGenerator AuthGenerator, repo Repository) Service {
+	return Service{auth: authGenerator, repo: repo}
 }
 
 type RegisterRequest struct {
@@ -94,7 +97,8 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	AccessToken string `json:"access_token"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 func (s Service) Login(req LoginRequest) (LoginResponse, error) {
@@ -112,7 +116,12 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 		return LoginResponse{}, fmt.Errorf("username or password is not correct")
 	}
 
-	token, err := createToken(user.ID, s.signKey)
+	accessToken, err := s.auth.CreateAccessToken(user)
+	if err != nil {
+		return LoginResponse{}, fmt.Errorf("unexpected err: %w", err)
+	}
+
+	refreshToken, err := s.auth.CreateRefreshToken(user)
 	if err != nil {
 		return LoginResponse{}, fmt.Errorf("unexpected err: %w", err)
 	}
@@ -125,7 +134,8 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 	}
 
 	return LoginResponse{
-		AccessToken: token,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
 	}, nil
 }
 
@@ -146,56 +156,4 @@ func (s Service) GetProfile(req ProfileRequest) (ProfileResponse, error) {
 	}
 
 	return ProfileResponse{Name: user.Name}, nil
-}
-
-type Claims struct {
-	RegisteredClaims jwt.RegisteredClaims
-	UserID           uint
-}
-
-func (c Claims) GetExpirationTime() (*jwt.NumericDate, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (c Claims) GetIssuedAt() (*jwt.NumericDate, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (c Claims) GetNotBefore() (*jwt.NumericDate, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (c Claims) GetIssuer() (string, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (c Claims) GetSubject() (string, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (c Claims) GetAudience() (jwt.ClaimStrings, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (c Claims) Valid() error {
-	return nil
-}
-
-func createToken(UserID uint, signKey string) (string, error) {
-	t := jwt.New(jwt.SigningMethodHS256)
-
-	t.Claims = &Claims{
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(30 * time.Minute)),
-		},
-		UserID: UserID,
-	}
-
-	return t.SignedString([]byte(signKey))
 }

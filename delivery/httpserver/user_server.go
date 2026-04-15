@@ -8,12 +8,12 @@ import (
 )
 
 func (s Server) userRegister(c echo.Context) error {
-	var uReq userservice.RegisterRequest
-	if err := c.Bind(&uReq); err != nil {
+	var req userservice.RegisterRequest
+	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	resp, err := s.userSvc.Register(uReq)
+	resp, err := s.userSvc.Register(req)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -22,12 +22,27 @@ func (s Server) userRegister(c echo.Context) error {
 }
 
 func (s Server) userLogin(c echo.Context) error {
-	var uReq userservice.LoginRequest
-	if err := c.Bind(&uReq); err != nil {
+	var req userservice.LoginRequest
+	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	resp, err := s.userSvc.Login(uReq)
+	resp, err := s.userSvc.Login(req)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (s Server) userProfile(c echo.Context) error {
+	authToken := c.Request().Header.Get("Authorization")
+	claims, err := s.authSvc.ParseToken(authToken)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
+	}
+
+	resp, err := s.userSvc.GetProfile(userservice.ProfileRequest{UserID: claims.UserID})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}

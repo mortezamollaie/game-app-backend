@@ -35,14 +35,14 @@ type RegisterRequest struct {
 	Password    string `json:"password"`
 }
 
-type registerResponseUser struct {
+type UserInfo struct {
 	ID          uint   `json:"id"`
 	Name        string `json:"name"`
 	PhoneNumber string `json:"phone_number"`
 }
 
 type RegisterResponse struct {
-	User registerResponseUser `json:"user"`
+	User UserInfo `json:"user"`
 }
 
 func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
@@ -103,9 +103,14 @@ type LoginRequest struct {
 	Password    string `json:"password"`
 }
 
-type LoginResponse struct {
+type Tokens struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
+}
+
+type LoginResponse struct {
+	User   UserInfo `json:"user"`
+	Tokens Tokens   `json:"tokens"`
 }
 
 func (s Service) Login(req LoginRequest) (LoginResponse, error) {
@@ -141,8 +146,15 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 	}
 
 	return LoginResponse{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
+		Tokens: Tokens{
+			AccessToken:  accessToken,
+			RefreshToken: refreshToken,
+		},
+		User: UserInfo{
+			ID:          user.ID,
+			Name:        user.Name,
+			PhoneNumber: user.PhoneNumber,
+		},
 	}, nil
 }
 

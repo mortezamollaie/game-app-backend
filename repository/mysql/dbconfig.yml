@@ -1,5 +1,5 @@
 production:
   dialect: mysql
   datasource: root@tcp(localhost:3306)/gameapp_db?parseTime=true&charset=utf8mb4&loc=Local
-  dir: migrations
+  dir: repository/mysql/migrations
   table: migrations

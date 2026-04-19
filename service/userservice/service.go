@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"game-app/entity"
 	"game-app/pkg/phonenumber"
+	"game-app/pkg/richerror"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -121,7 +122,7 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 
 	user, exits, err := s.repo.GetUserByPhoneNumber(req.PhoneNumber)
 	if err != nil {
-		return LoginResponse{}, fmt.Errorf("unexpected err: %w", err)
+		return LoginResponse{}, richerror.New(err, "userservice.Login", "unexpected error", richerror.KindUnexpected, nil)
 	}
 
 	if !exits {
@@ -171,7 +172,8 @@ func (s Service) GetProfile(req ProfileRequest) (ProfileResponse, error) {
 	user, err := s.repo.GetUserByID(req.UserID)
 	if err != nil {
 		// TODO - we can use Rich Error.
-		return ProfileResponse{}, fmt.Errorf("unexpected err: %w", err)
+		// return ProfileResponse{}, fmt.Errorf("unexpected err: %w", err)
+		return ProfileResponse{}, richerror.New(err, "userservice.Profile", err.Error(), richerror.KindUnexpected, nil)
 	}
 
 	return ProfileResponse{Name: user.Name}, nil

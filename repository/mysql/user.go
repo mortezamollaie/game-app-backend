@@ -3,8 +3,8 @@ package mysql
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"game-app/entity"
+	"game-app/pkg/richerror"
 	"time"
 )
 
@@ -16,7 +16,7 @@ func (d MySQLDB) IsPhoneNumberUnique(phoneNumber string) (bool, error) {
 			return true, nil
 		}
 
-		return false, fmt.Errorf("can't scan query result: %w", err)
+		return false, richerror.New(err, "mysql.IsPhoneNumberUnique", "can't scan query result", richerror.KindUnexpected, nil)
 	}
 
 	return false, err
@@ -25,7 +25,7 @@ func (d MySQLDB) IsPhoneNumberUnique(phoneNumber string) (bool, error) {
 func (d MySQLDB) Register(u entity.User) (entity.User, error) {
 	res, err := d.db.Exec(`insert into users(name, phone_number, password) values (?, ?, ?)`, u.Name, u.PhoneNumber, u.Password)
 	if err != nil {
-		return entity.User{}, fmt.Errorf("can't execute command: %w", err)
+		return entity.User{}, richerror.New(err, "mysql.Register", "can't scan query result", richerror.KindUnexpected, nil)
 	}
 
 	id, _ := res.LastInsertId()
@@ -42,7 +42,7 @@ func (d MySQLDB) GetUserByPhoneNumber(phoneNumber string) (entity.User, bool, er
 			return entity.User{}, false, nil
 		}
 
-		return entity.User{}, false, fmt.Errorf("can't scan query result: %w", err)
+		return entity.User{}, false, richerror.New(err, "mysql.GetUserByPhoneNumber", "can't scan query result", richerror.KindUnexpected, nil)
 	}
 
 	return user, true, nil
@@ -57,7 +57,7 @@ func (d MySQLDB) GetUserByID(id uint) (entity.User, error) {
 			return entity.User{}, nil
 		}
 
-		return entity.User{}, fmt.Errorf("can't scan query result: %w", err)
+		return entity.User{}, richerror.New(err, "mysql.GetUserByID", "record not found", richerror.KindNotFound, nil)
 	}
 
 	return user, nil

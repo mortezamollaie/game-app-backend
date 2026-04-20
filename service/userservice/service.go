@@ -116,13 +116,14 @@ type LoginResponse struct {
 
 func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 	// TODO - it would be better to user two separate method for existence check and getUserByPhoneNumber
+	const op = "userservice.Login"
 
 	// check the existence of phone number from repository
 	// get the user by phone number
 
 	user, exits, err := s.repo.GetUserByPhoneNumber(req.PhoneNumber)
 	if err != nil {
-		return LoginResponse{}, richerror.New(err, "userservice.Login", "unexpected error", richerror.KindUnexpected, nil)
+		return LoginResponse{}, richerror.New(op).WithErr(err).WithMeta(map[string]interface{}{"phone_number": req.PhoneNumber})
 	}
 
 	if !exits {
@@ -168,12 +169,12 @@ type ProfileResponse struct {
 }
 
 func (s Service) GetProfile(req ProfileRequest) (ProfileResponse, error) {
+	const op = "userservice.GetProfile"
+
 	// getUserByID
 	user, err := s.repo.GetUserByID(req.UserID)
 	if err != nil {
-		// TODO - we can use Rich Error.
-		// return ProfileResponse{}, fmt.Errorf("unexpected err: %w", err)
-		return ProfileResponse{}, richerror.New(err, "userservice.Profile", err.Error(), richerror.KindUnexpected, nil)
+		return ProfileResponse{}, richerror.New(op).WithErr(err).WithMeta(map[string]interface{}{"req": req})
 	}
 
 	return ProfileResponse{Name: user.Name}, nil

@@ -67,12 +67,24 @@ func (r RichError) Error() string {
 	return r.message
 }
 
-//func New(err error, operation, message string, kind Kind, meta map[string]interface{}) RichError {
-//	return RichError{
-//		operation:    operation,
-//		wrappedError: err,
-//		message:      message,
-//		kind:         kind,
-//		meta:         meta,
-//	}
-//}
+func (r RichError) Kind() Kind {
+	if r.kind != 0 {
+		return r.kind
+	}
+	re, ok := r.wrappedError.(RichError)
+	if !ok {
+		return 0
+	}
+	return re.kind
+}
+
+func (r RichError) Message() string {
+	if r.message != "" {
+		return r.message
+	}
+	re, ok := r.wrappedError.(RichError)
+	if !ok {
+		return r.wrappedError.Error()
+	}
+	return re.message
+}

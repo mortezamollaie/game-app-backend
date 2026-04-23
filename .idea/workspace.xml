@@ -5,19 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2df18190-f679-4671-9e86-af985dc2d09d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery/httpserver/httpserver.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/httpserver.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/delivery/httpserver/user_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/user_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/errmsg/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/errmsg/message.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/userservice/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/userservice/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/validator/uservalidator/validator.go" beforeDir="false" afterPath="$PROJECT_DIR$/validator/uservalidator/validator.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

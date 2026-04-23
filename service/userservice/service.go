@@ -2,15 +2,14 @@ package userservice
 
 import (
 	"fmt"
+	"game-app/dto"
 	"game-app/entity"
-	"game-app/pkg/phonenumber"
 	"game-app/pkg/richerror"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 type Repository interface {
-	IsPhoneNumberUnique(phoneNumber string) (bool, error)
 	Register(u entity.User) (entity.User, error)
 	GetUserByPhoneNumber(phoneNumber string) (entity.User, bool, error)
 	GetUserByID(id uint) (entity.User, error)
@@ -30,53 +29,13 @@ func New(authGenerator AuthGenerator, repo Repository) Service {
 	return Service{auth: authGenerator, repo: repo}
 }
 
-type RegisterRequest struct {
-	Name        string `json:"name"`
-	PhoneNumber string `json:"phone_number"`
-	Password    string `json:"password"`
-}
-
-type UserInfo struct {
-	ID          uint   `json:"id"`
-	Name        string `json:"name"`
-	PhoneNumber string `json:"phone_number"`
-}
-
-type RegisterResponse struct {
-	User UserInfo `json:"user"`
-}
-
-func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
+func (s Service) Register(req dto.RegisterRequest) (dto.RegisterResponse, error) {
 	// TODO - we should verify phone number by verification code
-	// validate phone number
-	if !phonenumber.IsValid(req.PhoneNumber) {
-		return RegisterResponse{}, fmt.Errorf("phone number %s is not valid", req.PhoneNumber)
-	}
-
-	// check uniqueness of phone number
-	if isUnique, err := s.repo.IsPhoneNumberUnique(req.PhoneNumber); err != nil || !isUnique {
-		if err != nil {
-			return RegisterResponse{}, fmt.Errorf("unexpected err: %w", err)
-		}
-
-		return RegisterResponse{}, fmt.Errorf("phone number %s is not unique", req.PhoneNumber)
-	}
-
-	// validate name
-	if len(req.Name) < 3 {
-		return RegisterResponse{}, fmt.Errorf("name lenght should be at least 3 characters long")
-	}
-
-	// TODO - check the password with the regex pattern
-	// validate password
-	if len(req.PhoneNumber) < 8 {
-		return RegisterResponse{}, fmt.Errorf("phone_number lenght should be at least 8 characters long")
-	}
 
 	pass := []byte(req.Password)
 	pass, err := bcrypt.GenerateFromPassword(pass, 0)
 	if err != nil {
-		return RegisterResponse{}, err
+		return dto.RegisterResponse{}, err
 	}
 
 	// create new user in storage
@@ -89,32 +48,17 @@ func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
 
 	createdUser, err := s.repo.Register(user)
 	if err != nil {
-		return RegisterResponse{}, fmt.Errorf("unexpected err: %w", err)
+		return dto.RegisterResponse{}, fmt.Errorf("unexpected err: %w", err)
 	}
 
-	return RegisterResponse{User: struct {
+	return dto.RegisterResponse{User: struct {
 		ID          uint   `json:"id"`
 		Name        string `json:"name"`
 		PhoneNumber string `json:"phone_number"`
 	}{ID: createdUser.ID, PhoneNumber: createdUser.PhoneNumber, Name: createdUser.Name}}, nil
 }
 
-type LoginRequest struct {
-	PhoneNumber string `json:"phone_number"`
-	Password    string `json:"password"`
-}
-
-type Tokens struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-}
-
-type LoginResponse struct {
-	User   UserInfo `json:"user"`
-	Tokens Tokens   `json:"tokens"`
-}
-
-func (s Service) Login(req LoginRequest) (LoginResponse, error) {
+func (s Service) Login(req dto.LoginRequest) (dto.LoginResponse, error) {
 	// TODO - it would be better to user two separate method for existence check and getUserByPhoneNumber
 	const op = "userservice.Login"
 
@@ -123,36 +67,36 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 
 	user, exits, err := s.repo.GetUserByPhoneNumber(req.PhoneNumber)
 	if err != nil {
-		return LoginResponse{}, richerror.New(op).WithErr(err).WithMeta(map[string]interface{}{"phone_number": req.PhoneNumber})
+		return dto.LoginResponse{}, richerror.New(op).WithErr(err).WithMeta(map[string]interface{}{"phone_number": req.PhoneNumber})
 	}
 
 	if !exits {
-		return LoginResponse{}, fmt.Errorf("username or password is not correct")
+		return dto.LoginResponse{}, fmt.Errorf("username or password is not correct")
 	}
 
 	accessToken, err := s.auth.CreateAccessToken(user)
 	if err != nil {
-		return LoginResponse{}, fmt.Errorf("unexpected err: %w", err)
+		return dto.LoginResponse{}, fmt.Errorf("unexpected err: %w", err)
 	}
 
 	refreshToken, err := s.auth.CreateRefreshToken(user)
 	if err != nil {
-		return LoginResponse{}, fmt.Errorf("unexpected err: %w", err)
+		return dto.LoginResponse{}, fmt.Errorf("unexpected err: %w", err)
 	}
 
 	// compare the user password with the req.password
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
 	if err != nil {
-		return LoginResponse{}, fmt.Errorf("username or password is not correct")
+		return dto.LoginResponse{}, fmt.Errorf("username or password is not correct")
 	}
 
-	return LoginResponse{
-		Tokens: Tokens{
+	return dto.LoginResponse{
+		Tokens: dto.Tokens{
 			AccessToken:  accessToken,
 			RefreshToken: refreshToken,
 		},
-		User: UserInfo{
+		User: dto.UserInfo{
 			ID:          user.ID,
 			Name:        user.Name,
 			PhoneNumber: user.PhoneNumber,
@@ -160,22 +104,14 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 	}, nil
 }
 
-type ProfileRequest struct {
-	UserID uint `json:"user_id"`
-}
-
-type ProfileResponse struct {
-	Name string `json:"name"`
-}
-
-func (s Service) GetProfile(req ProfileRequest) (ProfileResponse, error) {
+func (s Service) GetProfile(req dto.ProfileRequest) (dto.ProfileResponse, error) {
 	const op = "userservice.GetProfile"
 
 	// getUserByID
 	user, err := s.repo.GetUserByID(req.UserID)
 	if err != nil {
-		return ProfileResponse{}, richerror.New(op).WithErr(err).WithMeta(map[string]interface{}{"req": req})
+		return dto.ProfileResponse{}, richerror.New(op).WithErr(err).WithMeta(map[string]interface{}{"req": req})
 	}
 
-	return ProfileResponse{Name: user.Name}, nil
+	return dto.ProfileResponse{Name: user.Name}, nil
 }

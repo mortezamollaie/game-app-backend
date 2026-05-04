@@ -11,6 +11,6 @@ type Tokens struct {
 }
 
 type LoginResponse struct {
-	User   UserInfo `json:"user"`
+	User   UserInfo `json:"user_handler"`
 	Tokens Tokens   `json:"tokens"`
 }

@@ -17,7 +17,7 @@ func (s Service) Register(req dto.RegisterRequest) (dto.RegisterResponse, error)
 		return dto.RegisterResponse{}, err
 	}
 
-	// create new user in storage
+	// create new user_handler in storage
 	user := entity.User{
 		ID:          0,
 		PhoneNumber: req.PhoneNumber,

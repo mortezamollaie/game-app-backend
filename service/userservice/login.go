@@ -9,21 +9,17 @@ import (
 )
 
 func (s Service) Login(req dto.LoginRequest) (dto.LoginResponse, error) {
-	// TODO - it would be better to user two separate method for existence check and getUserByPhoneNumber
+	// TODO - it would be better to user_handler two separate method for existence check and getUserByPhoneNumber
 	const op = "userservice.Login"
 
 	// check the existence of phone number from repository
-	// get the user by phone number
+	// get the user_handler by phone number
 
-	user, exits, err := s.repo.GetUserByPhoneNumber(req.PhoneNumber)
+	user, err := s.repo.GetUserByPhoneNumber(req.PhoneNumber)
+
 	if err != nil {
 		return dto.LoginResponse{}, richerror.New(op).WithErr(err).WithMeta(map[string]interface{}{"phone_number": req.PhoneNumber})
 	}
-
-	if !exits {
-		return dto.LoginResponse{}, fmt.Errorf("username or password is not correct")
-	}
-
 	accessToken, err := s.auth.CreateAccessToken(user)
 	if err != nil {
 		return dto.LoginResponse{}, fmt.Errorf("unexpected err: %w", err)
@@ -34,7 +30,7 @@ func (s Service) Login(req dto.LoginRequest) (dto.LoginResponse, error) {
 		return dto.LoginResponse{}, fmt.Errorf("unexpected err: %w", err)
 	}
 
-	// compare the user password with the req.password
+	// compare the user_handler password with the req.password
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
 	if err != nil {

@@ -14,7 +14,3 @@ type LoginResponse struct {
 	User   UserInfo `json:"user"`
 	Tokens Tokens   `json:"tokens"`
 }
-
-type ProfileRequest struct {
-	UserID uint `json:"user_id"`
-}

@@ -2,19 +2,19 @@ package userservice
 
 import (
 	"fmt"
-	"game-app/dto"
 	"game-app/entity"
+	"game-app/param"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (s Service) Register(req dto.RegisterRequest) (dto.RegisterResponse, error) {
+func (s Service) Register(req param.RegisterRequest) (param.RegisterResponse, error) {
 	// TODO - we should verify phone number by verification code
 
 	pass := []byte(req.Password)
 	pass, err := bcrypt.GenerateFromPassword(pass, 0)
 	if err != nil {
-		return dto.RegisterResponse{}, err
+		return param.RegisterResponse{}, err
 	}
 
 	// create new user_handler in storage
@@ -27,10 +27,10 @@ func (s Service) Register(req dto.RegisterRequest) (dto.RegisterResponse, error)
 
 	createdUser, err := s.repo.Register(user)
 	if err != nil {
-		return dto.RegisterResponse{}, fmt.Errorf("unexpected err: %w", err)
+		return param.RegisterResponse{}, fmt.Errorf("unexpected err: %w", err)
 	}
 
-	return dto.RegisterResponse{User: struct {
+	return param.RegisterResponse{User: struct {
 		ID          uint   `json:"id"`
 		Name        string `json:"name"`
 		PhoneNumber string `json:"phone_number"`

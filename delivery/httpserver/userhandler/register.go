@@ -1,7 +1,7 @@
 package userhandler
 
 import (
-	"game-app/dto"
+	"game-app/param"
 	"game-app/pkg/httpmsg"
 	"net/http"
 
@@ -9,7 +9,7 @@ import (
 )
 
 func (h Handler) userRegister(c echo.Context) error {
-	var req dto.RegisterRequest
+	var req param.RegisterRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}

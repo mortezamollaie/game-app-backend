@@ -21,11 +21,11 @@ func (v Validator) ValidateRegisterRequest(req dto.RegisterRequest) (map[string]
 		validation.Field(&req.Password,
 			validation.Required,
 			validation.Match(regexp.MustCompile(passwordRegex)).
-				Error("password is not valid.")),
+				Error(errmsg.ErrorMsgPasswordIsNotValid)),
 		validation.Field(&req.PhoneNumber,
 			validation.Required,
 			validation.Match(regexp.MustCompile(phoneNumberRegex)).
-				Error("phone number is not valid."),
+				Error(errmsg.ErrorMsgPhoneNumberIsNotValid),
 			validation.By(v.checkPhoneNumberUniqueness)),
 	); err != nil {
 		errV, ok := err.(validation.Errors)

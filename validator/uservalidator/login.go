@@ -10,14 +10,14 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
 
-func (v Validator) ValidateLoginRequest(req dto.RegisterRequest) (map[string]string, error) {
+func (v Validator) ValidateLoginRequest(req dto.LoginRequest) (map[string]string, error) {
 	const op = "uservalidator.ValidateLoginRequest"
 
 	if err := validation.ValidateStruct(&req,
 		validation.Field(&req.PhoneNumber,
 			validation.Required,
 			validation.Match(regexp.MustCompile(phoneNumberRegex)).
-				Error("phone number is not valid."),
+				Error(errmsg.ErrorMsgPhoneNumberIsNotValid),
 			validation.By(v.doesPhoneNumberUniqueness),
 		),
 		validation.Field(&req.Password, validation.Required),

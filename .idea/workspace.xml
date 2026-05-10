@@ -6,17 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="2df18190-f679-4671-9e86-af985dc2d09d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery/httpserver/userhandler/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/userhandler/login.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery/httpserver/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery/httpserver/userhandler/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/userhandler/handler.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/delivery/httpserver/userhandler/profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/userhandler/profile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery/httpserver/userhandler/register.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/userhandler/register.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/user_login.go" beforeDir="false" afterPath="$PROJECT_DIR$/param/user_login.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/user_profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/param/user_profile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/user_register.go" beforeDir="false" afterPath="$PROJECT_DIR$/param/user_register.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/userservice/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/userservice/login.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/userservice/profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/userservice/profile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/userservice/register.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/userservice/register.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/validator/uservalidator/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/validator/uservalidator/login.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/validator/uservalidator/register.go" beforeDir="false" afterPath="$PROJECT_DIR$/validator/uservalidator/register.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery/httpserver/userhandler/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/userhandler/route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

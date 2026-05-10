@@ -1,0 +1,9 @@
+---
+type: yml
+auth:
+  sign_key: hello
+
+mysql:
+  port: 3308
+  host: localhost
+  dbname: gameapp_db

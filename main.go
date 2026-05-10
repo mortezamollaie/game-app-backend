@@ -8,7 +8,6 @@ import (
 	authservice "game-app/service/authService"
 	userservice "game-app/service/userservice"
 	"game-app/validator/uservalidator"
-
 	"time"
 )
 
@@ -21,9 +20,10 @@ const (
 )
 
 func main() {
+	cfg2 := config.Load()
 
 	cfg := config.Config{
-		HTTPServer: config.HTTPServer{Port: 8080},
+		HTTPServer: config.HTTPServer{Port: 8088},
 		Auth: authservice.Config{
 			SignKey:               JwtSignKey,
 			AccessExpirationTime:  AccessTokenExpireDuration,

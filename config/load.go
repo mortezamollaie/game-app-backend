@@ -21,7 +21,7 @@ func Load() *Config {
 		str := strings.Replace(strings.ToLower(
 			strings.TrimPrefix(s, "")), "_", ".", -1)
 
-		return strings.Replace(str, "-", "_", -1)
+		return strings.Replace(str, "..", "_", -1)
 	}), nil)
 
 	var cfg Config

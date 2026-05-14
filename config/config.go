@@ -6,7 +6,7 @@ import (
 )
 
 type HTTPServer struct {
-	Port `koanf:"port"`
+	Port int `koanf:"port"`
 }
 
 type Config struct {

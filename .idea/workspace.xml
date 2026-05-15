@@ -6,8 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="2df18190-f679-4671-9e86-af985dc2d09d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/load.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/load.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery/httpserver/userhandler/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/userhandler/route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/entity/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/mysql/migrations/0001_add_user_table.sql" beforeDir="false" afterPath="$PROJECT_DIR$/repository/mysql/migrations/0001_add_user_table.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/mysql/migrations/0002_add_password_column_to_user_table.sql" beforeDir="false" afterPath="$PROJECT_DIR$/repository/mysql/migrations/0002_add_password_column_to_user_table.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

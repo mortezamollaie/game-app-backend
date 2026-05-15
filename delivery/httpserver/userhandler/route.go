@@ -11,7 +11,7 @@ func (h Handler) SetUserRoutes(e *echo.Echo) {
 	userG.POST("/login", h.userLogin)
 	userG.GET("/profile", h.userProfile, mw.WithConfig(mw.Config{
 		ContextKey: "user",
-		SigningKey: h.authSignKey,
+		SigningKey: h.authConfig.SignKey,
 		ParseTokenFunc: func(c echo.Context, auth string) (interface{}, error) {
 			claims, err := h.authSvc.ParseToken(auth)
 			if err != nil {

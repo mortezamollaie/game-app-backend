@@ -20,7 +20,7 @@ const (
 )
 
 func main() {
-	cfg2 := config.Load()
+	config.Load()
 
 	cfg := config.Config{
 		HTTPServer: config.HTTPServer{Port: 8088},

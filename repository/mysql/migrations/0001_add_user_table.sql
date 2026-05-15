@@ -1,9 +1,9 @@
 -- +migrate Up
-CREATE TABLE users(
-                      id int primary key AUTO_INCREMENT,
-                      name varchar(255) not null ,
-                      phone_number varchar(255) not null unique ,
-                      created_at datetime DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE `users`(
+                      `id` INT PRIMARY KEY AUTO_INCREMENT,
+                      `name` VARCHAR(191) NOT NULL ,
+                      `phone_number` VARCHAR(191) NOT NULL UNIQUE ,
+                      `created_at` datetime DEFAULT CURRENT_TIMESTAMP
 );
 
 -- +migrate Down

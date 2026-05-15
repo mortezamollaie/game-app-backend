@@ -2,7 +2,7 @@
 CREATE TABLE `permissions`(
                       `id` INT PRIMARY KEY AUTO_INCREMENT,
                       `title` VARCHAR(191) NOT NULL UNIQUE,
-                      `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+                      `created_at` datetime DEFAULT CURRENT_TIMESTAMP
 );
 
 -- +migrate Down

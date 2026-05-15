@@ -5,7 +5,7 @@ CREATE TABLE `access_controls`(
                               `actor_type` ENUM('role', 'user') NOT NULL,
                               `permission_id` INT NOT NULL,
                               `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-                              FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`),
+                              FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`)
 );
 
 -- +migrate Down

@@ -2,7 +2,7 @@ package userservice
 
 import (
 	"fmt"
-	"game-app/dto"
+	"game-app/param"
 	"game-app/pkg/richerror"
 
 	"golang.org/x/crypto/bcrypt"

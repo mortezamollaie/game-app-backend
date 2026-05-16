@@ -11,4 +11,5 @@ const (
 	ErrorMsgNameLength             = "name length should be at least 3 characters long"
 	ErrorMsgInvalidInput           = "invalid input"
 	ErrorMsgPasswordIsNotValid     = "password is not valid"
+	ErrorMsgSomeThingWentWrong     = "SomeThing went wrong"
 )

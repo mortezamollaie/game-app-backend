@@ -70,9 +70,9 @@ func (d MySQLDB) GetUserByID(id uint) (entity.User, error) {
 	return user, nil
 }
 
-func scanUser(row *sql.Row) (entity.User, error) {
+func scanUser(scanner Scanner) (entity.User, error) {
 	var createdAt time.Time
 	var user entity.User
-	err := row.Scan(&user.ID, &user.Name, &user.PhoneNumber, &createdAt, &user.Password)
+	err := scanner.Scan(&user.ID, &user.Name, &user.PhoneNumber, &createdAt, &user.Password)
 	return user, err
 }

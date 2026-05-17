@@ -3,7 +3,7 @@ package authorizationservice
 import "game-app/entity"
 
 type Repository interface {
-	GetUserACL(userID uint) ([]entity.AccessControl, error)
+	GetUserPermissionsTitle(userID uint) ([]entity.PermissionTitle, error)
 }
 
 type Service struct{}

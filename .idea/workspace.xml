@@ -6,10 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="2df18190-f679-4671-9e86-af985dc2d09d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery/httpserver/userhandler/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/userhandler/route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/entity/permission.go" beforeDir="false" afterPath="$PROJECT_DIR$/entity/permission.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/errmsg/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/errmsg/message.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repository/mysql/migrations/0006_add_access_control_table.sql" beforeDir="false" afterPath="$PROJECT_DIR$/repository/mysql/migrations/0006_add_access_control_table.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/mysql/access_control.go" beforeDir="false" afterPath="$PROJECT_DIR$/repository/mysql/access_control.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/mysql/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/repository/mysql/user.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/authorizationservice/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/authorizationservice/service.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

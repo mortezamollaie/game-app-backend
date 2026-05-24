@@ -1,17 +1,12 @@
 package userservice
 
 import (
-	"fmt"
 	"game-app/entity"
-	"game-app/pkg/phonenumber"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type Repository interface {
-	IsPhoneNumberUnique(phoneNumber string) (bool, error)
 	Register(u entity.User) (entity.User, error)
-	GetUserByPhoneNumber(phoneNumber string) (entity.User, bool, error)
+	GetUserByPhoneNumber(phoneNumber string) (entity.User, error)
 	GetUserByID(id uint) (entity.User, error)
 }
 
@@ -27,140 +22,4 @@ type Service struct {
 
 func New(authGenerator AuthGenerator, repo Repository) Service {
 	return Service{auth: authGenerator, repo: repo}
-}
-
-type RegisterRequest struct {
-	Name        string `json:"name"`
-	PhoneNumber string `json:"phone_number"`
-	Password    string `json:"password"`
-}
-
-type registerResponseUser struct {
-	ID          uint   `json:"id"`
-	Name        string `json:"name"`
-	PhoneNumber string `json:"phone_number"`
-}
-
-type RegisterResponse struct {
-	User registerResponseUser `json:"user"`
-}
-
-func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
-	// TODO - we should verify phone number by verification code
-	// validate phone number
-	if !phonenumber.IsValid(req.PhoneNumber) {
-		return RegisterResponse{}, fmt.Errorf("phone number %s is not valid", req.PhoneNumber)
-	}
-
-	// check uniqueness of phone number
-	if isUnique, err := s.repo.IsPhoneNumberUnique(req.PhoneNumber); err != nil || !isUnique {
-		if err != nil {
-			return RegisterResponse{}, fmt.Errorf("unexpected err: %w", err)
-		}
-
-		return RegisterResponse{}, fmt.Errorf("phone number %s is not unique", req.PhoneNumber)
-	}
-
-	// validate name
-	if len(req.Name) < 3 {
-		return RegisterResponse{}, fmt.Errorf("name lenght should be at least 3 characters long")
-	}
-
-	// TODO - check the password with the regex pattern
-	// validate password
-	if len(req.PhoneNumber) < 8 {
-		return RegisterResponse{}, fmt.Errorf("phone_number lenght should be at least 8 characters long")
-	}
-
-	pass := []byte(req.Password)
-	pass, err := bcrypt.GenerateFromPassword(pass, 0)
-	if err != nil {
-		return RegisterResponse{}, err
-	}
-
-	// create new user in storage
-	user := entity.User{
-		ID:          0,
-		PhoneNumber: req.PhoneNumber,
-		Name:        req.Name,
-		Password:    string(pass),
-	}
-
-	createdUser, err := s.repo.Register(user)
-	if err != nil {
-		return RegisterResponse{}, fmt.Errorf("unexpected err: %w", err)
-	}
-
-	return RegisterResponse{User: struct {
-		ID          uint   `json:"id"`
-		Name        string `json:"name"`
-		PhoneNumber string `json:"phone_number"`
-	}{ID: createdUser.ID, PhoneNumber: createdUser.PhoneNumber, Name: createdUser.Name}}, nil
-}
-
-type LoginRequest struct {
-	PhoneNumber string `json:"phone_number"`
-	Password    string `json:"password"`
-}
-
-type LoginResponse struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-}
-
-func (s Service) Login(req LoginRequest) (LoginResponse, error) {
-	// TODO - it would be better to user two separate method for existence check and getUserByPhoneNumber
-
-	// check the existence of phone number from repository
-	// get the user by phone number
-
-	user, exits, err := s.repo.GetUserByPhoneNumber(req.PhoneNumber)
-	if err != nil {
-		return LoginResponse{}, fmt.Errorf("unexpected err: %w", err)
-	}
-
-	if !exits {
-		return LoginResponse{}, fmt.Errorf("username or password is not correct")
-	}
-
-	accessToken, err := s.auth.CreateAccessToken(user)
-	if err != nil {
-		return LoginResponse{}, fmt.Errorf("unexpected err: %w", err)
-	}
-
-	refreshToken, err := s.auth.CreateRefreshToken(user)
-	if err != nil {
-		return LoginResponse{}, fmt.Errorf("unexpected err: %w", err)
-	}
-
-	// compare the user password with the req.password
-
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
-	if err != nil {
-		return LoginResponse{}, fmt.Errorf("username or password is not correct")
-	}
-
-	return LoginResponse{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-	}, nil
-}
-
-type ProfileRequest struct {
-	UserID uint `json:"user_id"`
-}
-
-type ProfileResponse struct {
-	Name string `json:"name"`
-}
-
-func (s Service) GetProfile(req ProfileRequest) (ProfileResponse, error) {
-	// getUserByID
-	user, err := s.repo.GetUserByID(req.UserID)
-	if err != nil {
-		// TODO - we can use Rich Error.
-		return ProfileResponse{}, fmt.Errorf("unexpected err: %w", err)
-	}
-
-	return ProfileResponse{Name: user.Name}, nil
 }

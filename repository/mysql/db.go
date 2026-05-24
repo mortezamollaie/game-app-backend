@@ -9,11 +9,11 @@ import (
 )
 
 type Config struct {
-	Username string
-	Password string
-	Port     int
-	Host     string
-	DBName   string
+	Username string `koanf:"username"`
+	Password string `koanf:"password"`
+	Port     int    `koanf:"port"`
+	Host     string `koanf:"host"`
+	DBName   string `koanf:"db_name"`
 }
 
 type MySQLDB struct {
@@ -38,3 +38,6 @@ func New(config Config) *MySQLDB {
 		db:     db}
 
 }
+
+// sql-migrate status -env="production" -config="dbconfig.yml"
+// sql-migrate up -env="production" -config="dbconfig.yml"

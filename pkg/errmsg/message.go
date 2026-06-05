@@ -12,4 +12,5 @@ const (
 	ErrorMsgInvalidInput           = "invalid input"
 	ErrorMsgPasswordIsNotValid     = "password is not valid"
 	ErrorMsgSomeThingWentWrong     = "SomeThing went wrong"
+	ErrorMsgAccessDenied           = "user not allowed"
 )

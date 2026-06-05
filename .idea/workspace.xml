@@ -4,7 +4,20 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2df18190-f679-4671-9e86-af985dc2d09d" name="Changes" comment="" />
+    <list default="true" id="2df18190-f679-4671-9e86-af985dc2d09d" name="Changes" comment="feat: changing repository to modules">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery/httpserver/userhandler/profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/userhandler/profile.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery/httpserver/userhandler/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/userhandler/route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/errmsg/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/errmsg/message.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/mysql/accesscontrol/access_control.go" beforeDir="false" afterPath="$PROJECT_DIR$/repository/mysql/mysqlaccesscontrol/access_control.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/mysql/accesscontrol/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/repository/mysql/mysqlaccesscontrol/db.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/mysql/accesscontrol/permission.go" beforeDir="false" afterPath="$PROJECT_DIR$/repository/mysql/mysqlaccesscontrol/permission.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/mysql/user/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/repository/mysql/mysqluser/db.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/mysql/user/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/repository/mysql/mysqluser/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/authService/authservice.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/authService/authservice.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/authService/claims.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/authService/claims.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/authorizationservice/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/authorizationservice/service.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,6 +63,12 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\golang\gocasts.ir\game-app\repository\mysql\user" />
+      <recent name="F:\golang\gocasts.ir\game-app\repository\mysql\accesscontrol" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -70,6 +89,10 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: changing repository to modules" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: changing repository to modules" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

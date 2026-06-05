@@ -1,4 +1,4 @@
-package user
+package mysqlaccesscontrol
 
 import "game-app/repository/mysql"
 

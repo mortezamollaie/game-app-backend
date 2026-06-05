@@ -1,4 +1,4 @@
-package accesscontrol
+package mysqlaccesscontrol
 
 import (
 	"game-app/entity"

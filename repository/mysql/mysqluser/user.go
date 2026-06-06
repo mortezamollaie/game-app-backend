@@ -28,7 +28,7 @@ func (d *DB) IsPhoneNumberUnique(phoneNumber string) (bool, error) {
 func (d *DB) Register(u entity.User) (entity.User, error) {
 	const op = "mysql.Register"
 
-	res, err := d.conn.Conn().Exec(`insert into users(name, phone_number, password) values (?, ?, ?)`, u.Name, u.PhoneNumber, u.Password)
+	res, err := d.conn.Conn().Exec(`insert into users(name, phone_number, password, role) values (?, ?, ?, ?)`, u.Name, u.PhoneNumber, u.Password, u.Role.String())
 	if err != nil {
 		return entity.User{}, richerror.New(op).WithErr(err).WithMessage(errmsg.ErrorMsgCantInsert).WithKind(richerror.KindUnexpected)
 	}
@@ -74,6 +74,12 @@ func (d *DB) GetUserByID(id uint) (entity.User, error) {
 func scanUser(scanner mysql.Scanner) (entity.User, error) {
 	var createdAt time.Time
 	var user entity.User
-	err := scanner.Scan(&user.ID, &user.Name, &user.PhoneNumber, &createdAt, &user.Password)
+
+	var roleStr string
+
+	err := scanner.Scan(&user.ID, &user.Name, &user.PhoneNumber, &createdAt, &user.Password, &roleStr)
+
+	user.Role = entity.MapToRoleEntity(roleStr)
+
 	return user, err
 }

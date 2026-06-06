@@ -3,26 +3,51 @@ package entity
 type Role uint8
 
 const (
-	TypicalUserRole = iota + 1
-	SuperAdminRole
-	StaffRole
-	CopyWriterRole
-	AccountantRole
+	TypicalUserRole Role = iota + 1
+	SuperAdminRole  Role = iota + 2
+	StaffRole       Role = iota + 3
+	CopyWriterRole  Role = iota + 4
+	AccountantRole  Role = iota + 5
+)
+
+const (
+	TypicalUserStr = "typicalUser"
+	SuperAdminStr  = "superAdmin"
+	StaffStr       = "staff"
+	CopyWriterStr  = "copyWriter"
+	AccountantStr  = "accountant"
 )
 
 func (r Role) String() string {
 	switch r {
 	case TypicalUserRole:
-		return "TypicalUserRole"
+		return TypicalUserStr
 	case SuperAdminRole:
-		return "SuperAdminRole"
+		return SuperAdminStr
 	case StaffRole:
-		return "StaffRole"
+		return StaffStr
 	case CopyWriterRole:
-		return "CopyWriterRole"
+		return CopyWriterStr
 	case AccountantRole:
-		return "AccountantRole"
+		return AccountantStr
 	default:
-		return "Unknown"
+		return TypicalUserStr
+	}
+}
+
+func MapToRoleEntity(roleStr string) Role {
+	switch roleStr {
+	case TypicalUserStr:
+		return TypicalUserRole
+	case SuperAdminStr:
+		return SuperAdminRole
+	case StaffStr:
+		return StaffRole
+	case CopyWriterStr:
+		return CopyWriterRole
+	case AccountantStr:
+		return AccountantRole
+	default:
+		return TypicalUserRole
 	}
 }

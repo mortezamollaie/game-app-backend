@@ -1,25 +1,21 @@
-package mysql
+package mysqlaccesscontrol
 
 import (
 	"game-app/entity"
 	"game-app/pkg/errmsg"
 	"game-app/pkg/richerror"
 	"game-app/pkg/slice"
+	"game-app/repository/mysql"
 	"strings"
 	"time"
 )
 
-func (d *MySQLDB) GetUserPermissionsTitle(userID uint) ([]entity.PermissionTitle, error) {
+func (d *DB) GetUserPermissionsTitle(userID uint, role entity.Role) ([]entity.PermissionTitle, error) {
 	const op = "mysql.GetUserPermissions"
-	user, err := d.GetUserByID(userID)
-	if err != nil {
-		return nil, richerror.New(op).WithErr(err).
-			WithMessage(errmsg.ErrorMsgCantQuery).WithKind(richerror.KindUnexpected)
-	}
 
 	roleACL := make([]entity.AccessControl, 0)
 
-	rows, err := d.db.Query("SELECT * FROM access_controls WHERE actor_type = ? and actor_id = ?", entity.RoleActorType, user.Role)
+	rows, err := d.conn.Conn().Query("SELECT * FROM access_controls WHERE actor_type = ? and actor_id = ?", entity.RoleActorType, role)
 	if err != nil {
 		return nil, richerror.New(op).WithErr(err).
 			WithMessage(errmsg.ErrorMsgSomeThingWentWrong).WithKind(richerror.KindUnexpected)
@@ -44,7 +40,7 @@ func (d *MySQLDB) GetUserPermissionsTitle(userID uint) ([]entity.PermissionTitle
 
 	userACL := make([]entity.AccessControl, 0)
 
-	userRows, err := d.db.Query("SELECT * FROM access_controls WHERE actor_type = ? and actor_id = ?", entity.UserActorType, user.ID)
+	userRows, err := d.conn.Conn().Query("SELECT * FROM access_controls WHERE actor_type = ? and actor_id = ?", entity.UserActorType, userID)
 	if err != nil {
 		return nil, richerror.New(op).WithErr(err).
 			WithMessage(errmsg.ErrorMsgSomeThingWentWrong).WithKind(richerror.KindUnexpected)
@@ -87,7 +83,7 @@ func (d *MySQLDB) GetUserPermissionsTitle(userID uint) ([]entity.PermissionTitle
 	}
 
 	// warning: this query works if we have one or more permission id
-	pRows, err := d.db.Query("select * from access_controls where id in (?"+strings.Repeat(",?", len(permissionIDs)-1)+")", args...)
+	pRows, err := d.conn.Conn().Query("select * from access_controls where id in (?"+strings.Repeat(",?", len(permissionIDs)-1)+")", args...)
 	if err != nil {
 		return nil, richerror.New(op).WithErr(err).
 			WithMessage(errmsg.ErrorMsgSomeThingWentWrong).WithKind(richerror.KindUnexpected)
@@ -117,7 +113,7 @@ func (d *MySQLDB) GetUserPermissionsTitle(userID uint) ([]entity.PermissionTitle
 
 }
 
-func scanAccessControl(scanner Scanner) (entity.AccessControl, error) {
+func scanAccessControl(scanner mysql.Scanner) (entity.AccessControl, error) {
 	var createdAt time.Time
 	var acl entity.AccessControl
 

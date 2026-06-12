@@ -6,15 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2df18190-f679-4671-9e86-af985dc2d09d" name="Changes" comment="feat: changing repository to modules">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery/httpserver/middleware/access_check.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/middleware/access_check.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery/httpserver/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery/httpserver/userhandler/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/userhandler/route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/entity/role.go" beforeDir="false" afterPath="$PROJECT_DIR$/entity/role.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repository/mysql/migrations/0004_add_permissions_table.sql" beforeDir="false" afterPath="$PROJECT_DIR$/repository/mysql/migrations/0004_add_permissions_table.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repository/mysql/migrations/0006_add_access_control_table.sql" beforeDir="false" afterPath="$PROJECT_DIR$/repository/mysql/migrations/0006_add_access_control_table.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repository/mysql/mysqluser/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/repository/mysql/mysqluser/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/userservice/register.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/userservice/register.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/category.go" beforeDir="false" afterPath="$PROJECT_DIR$/entity/category.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

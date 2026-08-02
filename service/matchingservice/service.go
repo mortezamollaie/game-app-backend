@@ -4,18 +4,27 @@ import (
 	"game-app/entity"
 	"game-app/param"
 	"game-app/pkg/richerror"
+	"time"
 )
 
 type Repo interface {
 	AddToWaitingList(userID uint, category entity.Category) error
 }
 
-type Service struct {
-	repo Repo
+type Config struct {
+	WaitingTimeout time.Duration `koanf:"waiting_timeout"`
 }
 
-func New() Service {
-	return Service{}
+type Service struct {
+	config Config `koanf:"config"`
+	repo   Repo
+}
+
+func New(config Config, repo Repo) Service {
+	return Service{
+		config: config,
+		repo:   repo,
+	}
 }
 
 func (s Service) AddToWaitingList(req param.AddToWaitingListRequest) (param.AddToWaitingListResponse, error) {
@@ -29,4 +38,5 @@ func (s Service) AddToWaitingList(req param.AddToWaitingListRequest) (param.AddT
 
 	// also we can update the waiting timestamp
 
+	return param.AddToWaitingListResponse{Timeout: s.config.WaitingTimeout}, nil
 }

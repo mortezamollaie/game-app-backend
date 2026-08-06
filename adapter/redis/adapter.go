@@ -24,3 +24,7 @@ func New(config Config) Adapter {
 		DB:       config.DB,
 	})}
 }
+
+func (a Adapter) Client() *redis.Client {
+	return a.client
+}

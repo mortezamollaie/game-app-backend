@@ -1,12 +1,15 @@
 package main
 
 import (
+	"fmt"
+	"game-app/adapter/redis"
 	"game-app/config"
 	"game-app/delivery/httpserver"
 	"game-app/repository/migrator"
 	"game-app/repository/mysql"
 	"game-app/repository/mysql/mysqlaccesscontrol"
 	"game-app/repository/mysql/mysqluser"
+	"game-app/repository/redis/redismatching"
 	authservice "game-app/service/authService"
 	"game-app/service/authorizationservice"
 	"game-app/service/backofficeuserservice"
@@ -14,37 +17,11 @@ import (
 	userservice "game-app/service/userservice"
 	"game-app/validator/matchingvalidator"
 	"game-app/validator/uservalidator"
-	"time"
-)
-
-const (
-	JwtSignKey                 = "jwt_secret_key"
-	AccessTokenSubject         = "ac"
-	RefreshTokenSubject        = "rf"
-	AccessTokenExpireDuration  = time.Hour * 24
-	RefreshTokenExpireDuration = time.Hour * 24 * 7
 )
 
 func main() {
-	config.Load()
-
-	cfg := config.Config{
-		HTTPServer: config.HTTPServer{Port: 8088},
-		Auth: authservice.Config{
-			SignKey:               JwtSignKey,
-			AccessExpirationTime:  AccessTokenExpireDuration,
-			RefreshExpirationTime: RefreshTokenExpireDuration,
-			AccessSubject:         AccessTokenSubject,
-			RefreshSubject:        RefreshTokenSubject,
-		},
-		Mysql: mysql.Config{
-			Host:     "127.0.0.1",
-			Port:     3306,
-			Username: "root",
-			Password: "",
-			DBName:   "gameapp_db",
-		},
-	}
+	cfg := config.Load("config.yml")
+	fmt.Println("cfg: ", cfg)
 
 	// TODO: add command for migrations
 	mgr := migrator.New(cfg.Mysql, "mysql")
@@ -77,8 +54,10 @@ func setupServices(cfg config.Config) (
 
 	uV := uservalidator.New(userMysql)
 
+	redisAdapter := redis.New(cfg.Redis)
+	matchingRepo := redismatching.New(redisAdapter)
 	matchingValidator := matchingvalidator.New()
-	matchingSvc := matchingservice.New(cfg.MatchingService)
+	matchingSvc := matchingservice.New(cfg.MatchingService, matchingRepo)
 
 	return authSvc, userSvc, uV, backofficeUserSvc, authorizationSvc, matchingSvc, matchingValidator
 }

@@ -5,5 +5,8 @@ CREATE TABLE `permissions`(
                       `created_at` datetime DEFAULT CURRENT_TIMESTAMP
 );
 
+INSERT INTO permissions(title) values ('user-delete');
+INSERT INTO permissions(title) values ('user-list');
+
 -- +migrate Down
 DROP TABLE permissions;

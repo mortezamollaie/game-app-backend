@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2df18190-f679-4671-9e86-af985dc2d09d" name="Changes" comment="" />
+    <list default="true" id="2df18190-f679-4671-9e86-af985dc2d09d" name="Changes" comment="feat: update matching service and redis adapter and refactor main">
+      <change beforePath="$PROJECT_DIR$/config/load.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/load.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,6 +52,12 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\golang\gocasts.ir\game-app\repository\mysql\user" />
+      <recent name="F:\golang\gocasts.ir\game-app\repository\mysql\accesscontrol" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -70,6 +78,14 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: changing repository to modules" />
+    <MESSAGE value="feat: adding redis" />
+    <MESSAGE value="fix: update volume in dockerfile" />
+    <MESSAGE value="feat: implement redis adapter" />
+    <MESSAGE value="feat: update matching service and redis adapter and refactor main" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: update matching service and redis adapter and refactor main" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

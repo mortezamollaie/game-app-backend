@@ -23,6 +23,7 @@ func (s Service) Register(req param.RegisterRequest) (param.RegisterResponse, er
 		PhoneNumber: req.PhoneNumber,
 		Name:        req.Name,
 		Password:    string(pass),
+		Role:        entity.TypicalUserRole,
 	}
 
 	createdUser, err := s.repo.Register(user)

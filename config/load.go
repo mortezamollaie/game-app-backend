@@ -10,12 +10,12 @@ import (
 	"github.com/knadh/koanf/v2"
 )
 
-func Load() *Config {
+func Load(address string) Config {
 	var k = koanf.New(".")
 
 	k.Load(confmap.Provider(defaultConfig, "."), nil)
 
-	k.Load(file.Provider("config.yml"), yaml.Parser())
+	k.Load(file.Provider(address), yaml.Parser())
 
 	k.Load(env.Provider("GAMEAPP_", ".", func(s string) string {
 		str := strings.Replace(strings.ToLower(
@@ -29,5 +29,5 @@ func Load() *Config {
 		panic(err)
 	}
 
-	return &cfg
+	return cfg
 }

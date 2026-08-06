@@ -1,5 +1,17 @@
 services:
-  database:
+  gameapp-redis:
+    image: bitnami/redis:6.2
+    container_name: gameapp-redis
+    restart: always
+    ports:
+      - '6380:6379'
+    command: redis-server --loglevel warning
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - redis-database:/data
+
+  gameapp-database:
     image: mysql:8.0
     ports:
       - "3306:3306"

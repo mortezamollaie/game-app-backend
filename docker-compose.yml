@@ -5,7 +5,7 @@ services:
     restart: always
     ports:
       - '6380:6379'
-    command: redis-server --loglevel warning
+    command: redis-server --loglevel warning --protected-mode no
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     volumes:

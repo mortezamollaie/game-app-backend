@@ -4,16 +4,8 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2df18190-f679-4671-9e86-af985dc2d09d" name="Changes" comment="feat: implement redis adapter">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/adapter/redis/adapter.go" beforeDir="false" afterPath="$PROJECT_DIR$/adapter/redis/adapter.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/default.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/default.go" afterDir="false" />
+    <list default="true" id="2df18190-f679-4671-9e86-af985dc2d09d" name="Changes" comment="feat: update matching service and redis adapter and refactor main">
       <change beforePath="$PROJECT_DIR$/config/load.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/load.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/param/matching_add_to_waiting_list.go" beforeDir="false" afterPath="$PROJECT_DIR$/param/matching_add_to_waiting_list.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repository/redis/redismatching/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/repository/redis/redismatching/db.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repository/redis/redismatching/waiting_list.go" beforeDir="false" afterPath="$PROJECT_DIR$/repository/redis/redismatching/waiting_list.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +84,8 @@
     <MESSAGE value="feat: adding redis" />
     <MESSAGE value="fix: update volume in dockerfile" />
     <MESSAGE value="feat: implement redis adapter" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: implement redis adapter" />
+    <MESSAGE value="feat: update matching service and redis adapter and refactor main" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: update matching service and redis adapter and refactor main" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

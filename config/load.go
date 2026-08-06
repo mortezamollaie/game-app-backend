@@ -29,5 +29,5 @@ func Load(address string) Config {
 		panic(err)
 	}
 
-	return &cfg
+	return cfg
 }

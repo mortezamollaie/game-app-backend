@@ -10,6 +10,7 @@ import (
 	"game-app/repository/mysql/mysqlaccesscontrol"
 	"game-app/repository/mysql/mysqluser"
 	"game-app/repository/redis/redismatching"
+	"game-app/scheduler"
 	authservice "game-app/service/authService"
 	"game-app/service/authorizationservice"
 	"game-app/service/backofficeuserservice"
@@ -17,6 +18,9 @@ import (
 	userservice "game-app/service/userservice"
 	"game-app/validator/matchingvalidator"
 	"game-app/validator/uservalidator"
+	"os"
+	"os/signal"
+	"time"
 )
 
 func main() {
@@ -29,8 +33,25 @@ func main() {
 
 	// TODO: add struct and add this returned item to struct fields
 	authSvc, userSvc, userValidator, backofficeSvc, authorizationSvc, matchingSvc, matchingValidator := setupServices(cfg)
-	server := httpserver.New(cfg, authSvc, userSvc, userValidator, backofficeSvc, authorizationSvc, matchingSvc, matchingValidator)
-	server.Serve()
+
+	go func() {
+		server := httpserver.New(cfg, authSvc, userSvc, userValidator, backofficeSvc, authorizationSvc, matchingSvc, matchingValidator)
+		server.Serve()
+	}()
+
+	done := make(chan bool)
+
+	go func() {
+		sch := scheduler.New()
+		sch.Start(done)
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+	fmt.Println("received interrupt signal. shutting down gracefully...")
+	done <- true
+	time.Sleep(5 * time.Second)
 }
 
 func setupServices(cfg config.Config) (

@@ -53,5 +53,9 @@ func (s Server) Serve() {
 	s.userHandler.SetUserRoutes(e)
 	s.backofficeUserHandler.SetUserListRoutes(e)
 
-	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", s.config.HTTPServer.Port)))
+	address := fmt.Sprintf(":%d", s.config.HTTPServer.Port)
+
+	fmt.Println("server listening on " + address)
+
+	e.Logger.Fatal(e.Start(address))
 }

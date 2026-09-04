@@ -4,8 +4,17 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2df18190-f679-4671-9e86-af985dc2d09d" name="Changes" comment="feat: update matching service and redis adapter and refactor main">
-      <change beforePath="$PROJECT_DIR$/config/load.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/load.go" afterDir="false" />
+    <list default="true" id="2df18190-f679-4671-9e86-af985dc2d09d" name="Changes" comment="feat(scheduler): adding scheduler to main and gracefully shut down">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/default.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/default.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery/httpserver/health_check.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/health_check.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery/httpserver/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery/httpserver/userhandler/profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/delivery/httpserver/userhandler/profile.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/mysql/mysqluser/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/repository/mysql/mysqluser/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/userservice/profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/userservice/profile.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/userservice/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/userservice/service.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +94,8 @@
     <MESSAGE value="fix: update volume in dockerfile" />
     <MESSAGE value="feat: implement redis adapter" />
     <MESSAGE value="feat: update matching service and redis adapter and refactor main" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: update matching service and redis adapter and refactor main" />
+    <MESSAGE value="feat(scheduler): adding scheduler to main and gracefully shut down" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(scheduler): adding scheduler to main and gracefully shut down" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

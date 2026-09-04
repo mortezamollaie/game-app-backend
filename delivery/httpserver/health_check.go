@@ -8,6 +8,6 @@ import (
 
 func (s Server) healthCheck(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{
-		"message": "everything is good!",
+		"message": "everything is working good!",
 	})
 }

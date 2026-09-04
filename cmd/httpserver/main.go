@@ -11,7 +11,6 @@ import (
 	"game-app/repository/mysql/mysqlaccesscontrol"
 	"game-app/repository/mysql/mysqluser"
 	"game-app/repository/redis/redismatching"
-	"game-app/scheduler"
 	authservice "game-app/service/authService"
 	"game-app/service/authorizationservice"
 	"game-app/service/backofficeuserservice"
@@ -21,7 +20,8 @@ import (
 	"game-app/validator/uservalidator"
 	"os"
 	"os/signal"
-	"time"
+
+	"github.com/labstack/echo/v4"
 )
 
 func main() {
@@ -35,17 +35,11 @@ func main() {
 	// TODO: add struct and add this returned item to struct fields
 	authSvc, userSvc, userValidator, backofficeSvc, authorizationSvc, matchingSvc, matchingValidator := setupServices(cfg)
 
-	server := httpserver.New(cfg, authSvc, userSvc, userValidator, backofficeSvc, authorizationSvc, matchingSvc, matchingValidator)
+	var httpServer *echo.Echo
 
 	go func() {
-		server.Serve()
-	}()
-
-	done := make(chan bool)
-
-	go func() {
-		sch := scheduler.New()
-		sch.Start(done)
+		server := httpserver.New(cfg, authSvc, userSvc, userValidator, backofficeSvc, authorizationSvc, matchingSvc, matchingValidator)
+		httpServer = server.Serve()
 	}()
 
 	quit := make(chan os.Signal, 1)
@@ -57,15 +51,12 @@ func main() {
 
 	defer cancel()
 
-	if err := server.Router.Shutdown(ctxWithTimeout); err != nil {
+	if err := httpServer.Shutdown(ctxWithTimeout); err != nil {
 		fmt.Println("http server shutdown error:", err)
 	}
 
 	fmt.Println("received interrupt signal. shutting down gracefully...")
-	done <- true
-	time.Sleep(cfg.Application.GracefulShutdownTimeout)
 
-	// TODO: the context doesn't wait for scheduler to finish this job.
 	<-ctxWithTimeout.Done()
 }
 

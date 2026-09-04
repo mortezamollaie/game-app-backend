@@ -23,6 +23,7 @@ type Server struct {
 	userHandler           userhandler.Handler
 	backofficeUserHandler backofficeuserhandler.Handler
 	matchingHandler       matchinghandler.Handler
+	Router                *echo.Echo
 }
 
 func New(
@@ -36,6 +37,7 @@ func New(
 	matchingValidator matchingvalidator.Validator,
 ) Server {
 	return Server{
+		Router:                echo.New(),
 		config:                config,
 		userHandler:           userhandler.New(config.Auth, authSvc, userSvc, userValidator),
 		backofficeUserHandler: backofficeuserhandler.New(config.Auth, authSvc, authorizationSvc, backofficeUserSvc),
@@ -43,21 +45,18 @@ func New(
 	}
 }
 
-func (s Server) Serve() *echo.Echo {
-	e := echo.New()
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+func (s Server) Serve() {
+	s.Router.Use(middleware.Logger())
+	s.Router.Use(middleware.Recover())
 
-	e.GET("/health-check", s.healthCheck)
+	s.Router.GET("/health-check", s.healthCheck)
 
-	s.userHandler.SetUserRoutes(e)
-	s.backofficeUserHandler.SetUserListRoutes(e)
+	s.userHandler.SetUserRoutes(s.Router)
+	s.backofficeUserHandler.SetUserListRoutes(s.Router)
 
 	address := fmt.Sprintf(":%d", s.config.HTTPServer.Port)
 
 	fmt.Println("server listening on " + address)
 
-	go e.Logger.Fatal(e.Start(address))
-
-	return e
+	s.Router.Logger.Fatal(s.Router.Start(address))
 }

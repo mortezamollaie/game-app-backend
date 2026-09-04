@@ -43,7 +43,7 @@ func New(
 	}
 }
 
-func (s Server) Serve() {
+func (s Server) Serve() *echo.Echo {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -57,5 +57,7 @@ func (s Server) Serve() {
 
 	fmt.Println("server listening on " + address)
 
-	e.Logger.Fatal(e.Start(address))
+	go e.Logger.Fatal(e.Start(address))
+
+	return e
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"game-app/adapter/redis"
 	"game-app/config"
@@ -21,6 +22,8 @@ import (
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/labstack/echo/v4"
 )
 
 func main() {
@@ -34,9 +37,11 @@ func main() {
 	// TODO: add struct and add this returned item to struct fields
 	authSvc, userSvc, userValidator, backofficeSvc, authorizationSvc, matchingSvc, matchingValidator := setupServices(cfg)
 
+	var httpServer *echo.Echo
+
 	go func() {
 		server := httpserver.New(cfg, authSvc, userSvc, userValidator, backofficeSvc, authorizationSvc, matchingSvc, matchingValidator)
-		server.Serve()
+		httpServer = server.Serve()
 	}()
 
 	done := make(chan bool)
@@ -49,6 +54,11 @@ func main() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
+
+	if err := httpServer.Shutdown(context.Background()); err != nil {
+		fmt.Println("http server shutdown error:", err)
+	}
+
 	fmt.Println("received interrupt signal. shutting down gracefully...")
 	done <- true
 	time.Sleep(5 * time.Second)

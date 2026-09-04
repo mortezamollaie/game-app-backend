@@ -20,8 +20,6 @@ import (
 	"game-app/validator/uservalidator"
 	"os"
 	"os/signal"
-
-	"github.com/labstack/echo/v4"
 )
 
 func main() {
@@ -35,11 +33,10 @@ func main() {
 	// TODO: add struct and add this returned item to struct fields
 	authSvc, userSvc, userValidator, backofficeSvc, authorizationSvc, matchingSvc, matchingValidator := setupServices(cfg)
 
-	var httpServer *echo.Echo
+	server := httpserver.New(cfg, authSvc, userSvc, userValidator, backofficeSvc, authorizationSvc, matchingSvc, matchingValidator)
 
 	go func() {
-		server := httpserver.New(cfg, authSvc, userSvc, userValidator, backofficeSvc, authorizationSvc, matchingSvc, matchingValidator)
-		httpServer = server.Serve()
+		server.Serve()
 	}()
 
 	quit := make(chan os.Signal, 1)
@@ -51,7 +48,7 @@ func main() {
 
 	defer cancel()
 
-	if err := httpServer.Shutdown(ctxWithTimeout); err != nil {
+	if err := server.Router.Shutdown(ctxWithTimeout); err != nil {
 		fmt.Println("http server shutdown error:", err)
 	}
 

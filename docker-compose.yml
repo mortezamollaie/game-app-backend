@@ -1,6 +1,6 @@
 services:
   gameapp-redis:
-    image: bitnami/redis:6.2
+    image: soldevelo/redis:6.2
     container_name: gameapp-redis
     restart: always
     ports:
